@@ -1,0 +1,207 @@
+<html>
+	<head>
+		<title>PacMan</title>
+		<style>
+
+			/*style for the grid*/
+			.wall
+			{
+				width: 50px;
+				height: 50px;
+				background-image: url('wall.png');
+				display: inline-block;
+			}
+
+			/*style for the pacman*/
+			#pacman
+			{
+				width: 50px;
+				height: 50px;
+				background-image: url('pacman.png');
+				background-repeat: no-repeat;
+				display: inline-block;
+			}
+
+			div
+			{
+				margin: -2px; /*Removes spacing between the grids*/
+				vertical-align: top;
+			}
+
+		</style>
+	</head>
+	<body>
+		<!--contains the grid-->
+		<div id="grid"></div>
+		<br>
+		<!--contains different operations to be performed -->
+		<div id="operations">
+			<p>Please select the operation to be performed</p>
+			<br>
+			<button onclick="placeValue()">PLACE</button>
+			<button onclick="moveOperation()">MOVE</button>
+			<button onclick="leftOperation()">LEFT</button>
+			<button onclick="rightOperation()">RIGHT</button>
+			<button onclick="report()">REPORT</button>
+		</div>
+	</body>
+	<script>
+
+		// 1 => <div class='wall'></div>
+		// 2 => <div class='pacman'></div>
+
+		//grid array
+		var map = [
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1]
+		]
+		window.drawGrid = function()
+		{
+			document.getElementById('grid').innerHTML="";
+			for(var i=map.length-1; i>=0;i--)
+			{
+				for(var j=0; j<map[i].length; j++)
+				{
+					if (map[i][j] === 1)
+					{
+						//build grid
+						document.getElementById('grid').innerHTML += "<div class='wall'></div>";
+					}
+					else if (map[i][j] === 2)
+					{
+						//place pacman on the grid
+						document.getElementById('grid').innerHTML += "<div id='pacman'></div>";
+						//check the facing direction and position of the pacman
+						if(direction.toLowerCase() == "north" && 0<=x<5 && 0<=y<5)
+						{
+							document.getElementById('pacman').style.transform = "rotate(270deg)";
+							window.leftOperation = function()
+							{
+								//rotate 90 degrees left
+								document.getElementById('pacman').style.transform = "rotate(180deg)";
+								direction = "west";
+							}
+							window.rightOperation = function()
+							{
+								//rotate 90 degrees right
+								document.getElementById('pacman').style.transform = "rotate(360deg)";
+								direction = "east";
+							}
+						}
+						else if(direction.toLowerCase() == "south" && 0<=x<5 && 0<=y<5)
+						{
+							document.getElementById('pacman').style.transform = "rotate(90deg)";
+							window.leftOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(360deg)";
+								direction = "east";
+							}
+							window.rightOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(180deg)";
+								direction = "west";
+							}
+						}
+						else if(direction.toLowerCase() == "west" && 0<=x<5 && 0<=y<5)
+						{
+							document.getElementById('pacman').style.transform = "rotate(180deg)";
+							window.leftOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(90deg)";
+								direction = "south";
+							}
+							window.rightOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(270deg)";
+								direction = "north";
+							}
+						}
+						else if(direction.toLowerCase() == "east" && 0<=x<5 && 0<=y<5)
+						{
+							window.leftOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(270deg)";
+								direction = "north";
+							}
+							window.rightOperation = function()
+							{
+								document.getElementById('pacman').style.transform = "rotate(90deg)";
+								direction = "south";
+							}
+						}
+					}
+				}
+				document.getElementById('grid').innerHTML += "<br>";
+			}
+		}
+		//function to place the pacman on the grid based on the user commands
+		window.placeValue = function()
+		{
+			window.x = prompt("Enter the value of X between 0 to 4: "); //X position
+			window.y = prompt("Enter the value of Y between 0 to 4: "); //Y position
+			window.direction = prompt("Choose the facing direction: NORTH, SOUTH, EAST or WEST?") //Facing direction
+			for(var k=0; k<map.length; k++)
+			{
+				for(var l=0; l<map[k].length; l++)
+				{
+					if(x == k && y ==l)
+					{
+						map[k][l] = 2;
+						drawGrid();
+					}
+				}
+			}
+		}
+		//function to move the pacman in forward direction
+		window.moveOperation = function()
+		{
+			if(direction.toLowerCase() == "north" && 0<=x<5 && 0<=y<5)
+			{
+				map[x][y] = 1;
+				x++;
+				map[x][y] = 2;
+				drawGrid();
+			}
+			else if(direction.toLowerCase() == "south" && 0<=x<5 && 0<=y<5)
+			{
+				map[x][y] = 1;
+				x--;
+				map[x][y] = 2;
+				drawGrid();
+			}
+			else if(direction.toLowerCase() == "east" && 0<=x<5 && 0<=y<5)
+			{
+				map[x][y] = 1;
+				y++;
+				map[x][y] = 2;
+				drawGrid();
+			}
+			else if(direction.toLowerCase() == "west" && 0<=x<5 && 0<=y<5)
+			{
+				map[x][y] = 1;
+				y--;
+				map[x][y] = 2;
+				drawGrid();
+			}
+			else
+			{
+					alert("Invalid input");
+			}
+		}
+		//Print the output on the screen
+		window.report = function()
+		{
+			document.write("Output: ");
+			document.write("<br>");
+			document.write("X = ", x);
+			document.write("<br>");
+			document.write("Y = ", y);
+			document.write("<br>");
+			document.write("Facing direction: ", direction);
+		}
+		drawGrid(); //draw grid for the first time
+	</script>
+</html>
